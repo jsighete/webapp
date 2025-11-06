@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planted Mind Tasks</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Main App Container -->
+    <div id="app-container">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <h1>Planted Mind Tasks</h1>
+            <div class="streak-container">
+                <span title="Daily Streak">🔥</span>
+                <span id="streak-counter">0</span>
+            </div>
+        </header>
+
+        <!-- Plant Display -->
+        <div class="plant-container">
+            <svg id="plant-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Pot -->
+                <path d="M25 75 C 20 85 20 95 50 95 C 80 95 80 85 75 75 L 70 60 H 30 L 25 75 Z" fill="#D38C61" />
+                <path d="M30 60 H 70 V 65 H 30 Z" fill="#E0A781" /> 
+                <!-- Plant Group (for animation) -->
+                <g id="plant-svg-group">
+                    <!-- Stem -->
+                    <path id="plant-stem" d="M50 60 V 35" stroke="#7CB342" stroke-width="4" fill="none" />
+                    <!-- Leaves -->
+                    <g id="plant-leaves">
+                        <path id="leaf-1" fill="#8BC34A" d="M50 45 Q 40 40 35 30 Q 45 40 50 45 Z" />
+                        <path id="leaf-2" fill="#8BC34A" d="M50 45 Q 60 40 65 30 Q 55 40 50 45 Z" />
+                    </g>
+                    <!-- Flower -->
+                    <g id="plant-flower">
+                        <circle cx="50" cy="27" r="5" fill="#FFC107" /> <!-- Center -->
+                        <circle cx="50" cy="20" r="4" fill="#FFD740" />
+                        <circle cx="57" cy="24" r="4" fill="#FFD740" />
+                        <circle cx="57" cy="30" r="4" fill="#FFD740" />
+                        <circle cx="50" cy="34" r="4" fill="#FFD740" />
+                        <circle cx="43" cy="30" r="4" fill="#FFD740" />
+                        <circle cx="43" cy="24" r="4" fill="#FFD740" />
+                    </g>
+                </g>
+            </svg>
+            
+            <p id="status-message">What task did you complete?</p>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-container">
+            <div class="progress-bar-container">
+                <label for="hydration-bar">Daily Hydration</label>
+                <div class="progress-bar">
+                    <div id="hydration-bar" class="progress-bar-fill" style="width: 10%;">
+                        10%
+                    </div>
+                </div>
+            </div>
+            
+            <div class="progress-bar-container">
+                <label for="happiness-bar">Today's Tasks</label>
+                <div class="progress-bar">
+                    <div id="happiness-bar" class="progress-bar-fill" style="width: 0%;">
+                        0 / 5
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Input Form -->
+        <div class="task-form">
+            <input type="text" id="task-input" placeholder="e.g., Finished math homework" />
+            <button id="complete-task-button">
+                Complete Task
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="scripts.js"></script> <!-- Removed type="module" for simplicity, as DOMContentLoaded handles timing -->
+
+</body>
+</html>
