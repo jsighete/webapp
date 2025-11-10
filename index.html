@@ -10,10 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Custom CSS -->
+    <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="flex items-center justify-center min-h-screen p-4">
 
     <!-- Main App Container -->
     <div id="app-container">
@@ -29,6 +29,10 @@
 
         <!-- Plant Display -->
         <div class="plant-container">
+            <!-- [NEW] Droplet Container -->
+            <div id="droplet-container"></div>
+
+            <!-- Your Plant SVG -->
             <svg id="plant-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                 <!-- Pot -->
                 <path d="M25 75 C 20 85 20 95 50 95 C 80 95 80 85 75 75 L 70 60 H 30 L 25 75 Z" fill="#D38C61" />
@@ -63,8 +67,8 @@
             <div class="progress-bar-container">
                 <label for="hydration-bar">Daily Hydration</label>
                 <div class="progress-bar">
-                    <div id="hydration-bar" class="progress-bar-fill" style="width: 10%;">
-                        10%
+                    <div id="hydration-bar" class="progress-bar-fill" style="width: 0%;">
+                        0%
                     </div>
                 </div>
             </div>
@@ -73,7 +77,7 @@
                 <label for="happiness-bar">Today's Tasks</label>
                 <div class="progress-bar">
                     <div id="happiness-bar" class="progress-bar-fill" style="width: 0%;">
-                        0 / 5
+                        0 / 10
                     </div>
                 </div>
             </div>
@@ -88,8 +92,12 @@
         </div>
     </div>
 
-    <!-- JavaScript -->
-    <script src="scripts.js"></script> <!-- Removed type="module" for simplicity, as DOMContentLoaded handles timing -->
+    <!-- 
+      Link to the external JS file
+      This is placed at the end of the <body> to ensure all HTML
+      elements are loaded before the script runs.
+    -->
+    <script src="scripts.js"></script>
 
 </body>
 </html>

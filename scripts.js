@@ -3,7 +3,7 @@ const DECAY_PER_HOUR = 100 / 24; // Loses 100% hydration over 24 hours
 const DECAY_INTERVAL_MS = 5000; // Check and apply decay every 5 seconds
 const MIN_HYDRATION = 0;
 const MAX_HYDRATION = 100;
-const DAILY_TASK_GOAL = 5;
+const DAILY_TASK_GOAL = 10; 
 
 // --- Health State Machine ---
 const HEALTH_STATES = [
@@ -35,14 +35,13 @@ const HEALTH_STATES = [
 
 // --- Global Plant State ---
 const plant = {
-    hydration: 10,
+    hydration: 0,
     tasksCompletedToday: 0,
     streak: 0,
     dailyGoalMet: false,
 };
 
 // --- DOM Element Cache ---
-// [FIX] We can just query for these directly since the script runs after they are created.
 const hydrationBar = document.getElementById('hydration-bar');
 const happinessBar = document.getElementById('happiness-bar');
 const plantSvgGroup = document.getElementById('plant-svg-group');
@@ -55,6 +54,7 @@ const taskInput = document.getElementById('task-input');
 const completeTaskButton = document.getElementById('complete-task-button');
 const streakCounter = document.getElementById('streak-counter');
 const bodyElement = document.body;
+const dropletContainer = document.getElementById('droplet-container'); // [CHANGED]
 
 
 // --- Core Functions ---
@@ -93,7 +93,7 @@ function loadData() {
     }
 
     // --- 3. Load Hydration (Offline Decay) ---
-    const savedHydration = data.hydration || 10;
+    const savedHydration = data.hydration || 0;
     const savedTimestamp = data.hydrationTimestamp || Date.now();
     
     if (plant.dailyGoalMet) {
@@ -111,7 +111,6 @@ function loadData() {
 
 /**
  * Saves all critical plant data to localStorage.
- * @param {boolean} [isGoalComplete=false] - True if this save is for the final task.
  */
 function saveData(isGoalComplete = false) {
     const data = JSON.parse(localStorage.getItem('plantData')) || {};
@@ -124,7 +123,6 @@ function saveData(isGoalComplete = false) {
     data.lastSaveDate = new Date().toLocaleDateString();
     
     if (isGoalComplete) {
-        // [FIX] Corrected typo: toLocaleDateString()
         data.lastCompletionDate = new Date().toLocaleDateString();
     }
     
@@ -143,7 +141,7 @@ function updateUI() {
     // 2. Update Task Bar
     const taskPercent = (plant.tasksCompletedToday / DAILY_TASK_GOAL) * 100;
     happinessBar.style.width = `${taskPercent}%`;
-    happinessBar.textContent = `${plant.tasksCompletedToday} / ${DAILY_TASK_GOAL} Tasks`;
+    happinessBar.textContent = `${plant.tasksCompletedToday} / ${DAILY_TASK_GOAL} Tasks`; 
 
     // 3. Update Streak Counter
     streakCounter.textContent = plant.streak;
@@ -231,9 +229,29 @@ function startDecayTimer() {
     }, DECAY_INTERVAL_MS);
 }
 
+/**
+ * [CHANGED] Plays the watering animation
+ */
+function playDropletAnimation() {
+    for (let i = 0; i < 5; i++) {
+        const droplet = document.createElement('div');
+        droplet.classList.add('droplet');
+        
+        // Random horizontal position (from 20% to 80% of the container width)
+        droplet.style.left = `${Math.random() * 60 + 20}%`; 
+        // Random animation delay
+        droplet.style.animationDelay = `${Math.random() * 0.5}s`;
+        
+        dropletContainer.appendChild(droplet);
+        
+        // Remove the droplet after its animation finishes
+        setTimeout(() => {
+            droplet.remove();
+        }, 1200); // Must match CSS animation duration
+    }
+}
+
 // --- Event Listeners ---
-// [FIX] We can attach these directly because the script is at the end of the body.
-// The elements are guaranteed to exist.
 
 taskInput.addEventListener('input', () => {
     if (plant.dailyGoalMet) return; 
@@ -251,12 +269,13 @@ completeTaskButton.addEventListener('click', () => {
 
     plant.tasksCompletedToday++;
 
-    if (plant.tasksCompletedToday === DAILY_TASK_GOAL) {
+    if (plant.tasksCompletedToday === DAILY_TASK_GOAL) { 
         // --- GOAL MET ---
         plant.hydration = MAX_HYDRATION;
         plant.dailyGoalMet = true;
         plant.streak++;
         
+        playDropletAnimation(); // [CHANGED] Play animation
         showStatusMessage(`Goal complete! Streak: ${plant.streak}`);
         setCompleteButtonDisabled(true);
         taskInput.disabled = true;
@@ -264,10 +283,11 @@ completeTaskButton.addEventListener('click', () => {
         saveData(true); 
         
     } else {
-        // --- TASK 1-4 ---
-        const randomHydration = Math.floor(Math.random() * 11) + 15; // 15-25
-        plant.hydration = Math.min(MAX_HYDRATION, plant.hydration + randomHydration);
+        // --- TASK 1-9 ---
+        const hydrationPerTask = MAX_HYDRATION / DAILY_TASK_GOAL; // 100 / 10 = 10
+        plant.hydration = Math.min(MAX_HYDRATION, plant.hydration + hydrationPerTask);
         
+        playDropletAnimation(); // [CHANGED] Play animation
         showStatusMessage(`Great job on: ${taskName}!`);
         saveData(false); 
     }
@@ -284,7 +304,7 @@ window.addEventListener('beforeunload', () => {
 });
 
 // --- Initial App Setup ---
-// [FIX] These run immediately, as they are no longer in a listener.
+// Run all startup functions
 loadData(); 
 updateUI(); 
 startDecayTimer(); 
