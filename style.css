@@ -83,7 +83,7 @@ body {
     transform-origin: bottom center;
 }
 
-/* --- [NEW] Droplet Animation --- */
+/* --- Droplet Animation --- */
 #droplet-container {
     position: absolute;
     top: 0;

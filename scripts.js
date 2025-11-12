@@ -6,30 +6,32 @@ const MAX_HYDRATION = 100;
 const DAILY_TASK_GOAL = 10; 
 
 // --- Health State Machine ---
+// [CHANGED] Set max health rotation to 0deg (vertical)
 const HEALTH_STATES = [
     { 
-        threshold: 20, // 0-19
+        threshold: 19, // 0-19: Brownish-Grey
         transform: 'rotate(10deg)', 
-        colors: ['#D2B48C', '#A0522D', '#B18E66', '#FFDAB9'], 
-        bg: ['#C68C5E', '#D3A588'] 
+        // [Leaf, Stem, Flower Center, Flower Petals]
+        colors: ['#D2B48C', '#A0522D', '#B18E66', '#D2B48C'], // All dry/brown
+        bg: ['#af9981ff', '#a78758ff'] // Brownish-Grey
     },
     { 
-        threshold: 50, // 20-49
+        threshold: 50, // 20-49: Warmer Tan
         transform: 'rotate(5deg)',  
-        colors: ['#B4CD6E', '#9ACD32', '#FFC107', '#FFD740'], 
-        bg: ['#E0BE9D', '#EBD2BC'] 
+        colors: ['#B4CD6E', '#9ACD32', '#B18E66', '#FFDAB9'], // Dull green, pale flower
+        bg: ['#ecc648ff', '#bd7810ff'] // Warmer Tan
     },
     { 
-        threshold: 80, // 50-79
+        threshold: 80, // 50-79: Pleasant Green
         transform: 'rotate(0deg)',   
-        colors: ['#8BC34A', '#7CB342', '#FFC107', '#FFD740'], 
-        bg: ['#A8D5B1', '#C6E7D2'] 
+        colors: ['#8BC34A', '#7CB342', '#FFC107', '#FFD740'], // Healthy yellow flower
+        bg: ['#9be6abff', '#13be51ff'] // Pleasant Green
     },
     { 
-        threshold: Infinity, // 80+
-        transform: 'rotate(-5deg) scale(1.05)', 
-        colors: ['#6EE7B7', '#5BB76E', '#FFD700', '#FFEA00'], 
-        bg: ['#8BC34A', '#A1E6CA'] 
+        threshold: Infinity, // 80+: Greenish-Blue
+        transform: 'rotate(0deg) scale(1.05)', // [CHANGED] Was -5deg
+        colors: ['#6EE7B7', '#5BB76E', '#FFD700', '#FF85A1'], // Lush green, PINK flower
+        bg: ['#A1E6CA', '#adf179ff'] // Greenish-Blue
     }
 ];
 
@@ -54,7 +56,7 @@ const taskInput = document.getElementById('task-input');
 const completeTaskButton = document.getElementById('complete-task-button');
 const streakCounter = document.getElementById('streak-counter');
 const bodyElement = document.body;
-const dropletContainer = document.getElementById('droplet-container'); // [CHANGED]
+const dropletContainer = document.getElementById('droplet-container'); 
 
 
 // --- Core Functions ---
@@ -111,6 +113,7 @@ function loadData() {
 
 /**
  * Saves all critical plant data to localStorage.
+ * @param {boolean} [isGoalComplete=false] - True if this save is for the final task.
  */
 function saveData(isGoalComplete = false) {
     const data = JSON.parse(localStorage.getItem('plantData')) || {};
@@ -230,7 +233,7 @@ function startDecayTimer() {
 }
 
 /**
- * [CHANGED] Plays the watering animation
+ * Plays the watering animation
  */
 function playDropletAnimation() {
     for (let i = 0; i < 5; i++) {
@@ -275,7 +278,7 @@ completeTaskButton.addEventListener('click', () => {
         plant.dailyGoalMet = true;
         plant.streak++;
         
-        playDropletAnimation(); // [CHANGED] Play animation
+        playDropletAnimation(); // Play animation
         showStatusMessage(`Goal complete! Streak: ${plant.streak}`);
         setCompleteButtonDisabled(true);
         taskInput.disabled = true;
@@ -287,7 +290,7 @@ completeTaskButton.addEventListener('click', () => {
         const hydrationPerTask = MAX_HYDRATION / DAILY_TASK_GOAL; // 100 / 10 = 10
         plant.hydration = Math.min(MAX_HYDRATION, plant.hydration + hydrationPerTask);
         
-        playDropletAnimation(); // [CHANGED] Play animation
+        playDropletAnimation(); // Play animation
         showStatusMessage(`Great job on: ${taskName}!`);
         saveData(false); 
     }
@@ -316,3 +319,6 @@ if (plant.dailyGoalMet) {
     taskInput.placeholder = "Come back tomorrow!";
     setCompleteButtonDisabled(true);
 }
+
+
+// use localStorage.removeItem('plantData') to reset user save data.
